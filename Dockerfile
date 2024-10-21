@@ -1,20 +1,32 @@
-# Ultroid - UserBot
-# Copyright (C) 2021-2023 TeamUltroid
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
+# Use Ubuntu 22.04 as the base image
+FROM ubuntu:22.04
 
-FROM theteamultroid/ultroid:main
-
-# set timezone
+# Set timezone
 ENV TZ=Asia/Kolkata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY installer.sh .
+# Install required dependencies (adjust as necessary for your app)
+RUN apt-get update && \
+    apt-get install -y \
+    python3 \
+    python3-pip \
+    git \
+    curl \
+    bash \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN bash installer.sh
+# Copy the current code in the working directory (where the Dockerfile resides) into the container
+COPY . /root/TeamUltroid/
 
-# changing workdir
-WORKDIR "/root/TeamUltroid"
+# Copy installer script and execute it
+COPY installer.sh /root/TeamUltroid/
+RUN bash /root/TeamUltroid/installer.sh
 
-# start the bot.
+# Change working directory to where the code is located
+WORKDIR /root/TeamUltroid
+
+# Expose necessary ports (if applicable)
+# EXPOSE 8080
+
+# Start the bot with the startup script
 CMD ["bash", "startup"]
