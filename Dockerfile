@@ -15,14 +15,18 @@ RUN apt-get update && \
     bash \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the current code in the working directory (where the Dockerfile resides) into the container
+# Copy the code and .env file into the container
 COPY . /root/TeamUltroid/
+COPY .env /root/TeamUltroid/
 
-# Copy installer script and execute it
+# Install any additional dependencies via the installer script
 COPY installer.sh /root/TeamUltroid/
 RUN bash /root/TeamUltroid/installer.sh
 
-# Change working directory to where the code is located
+# Load environment variables from the .env file
+RUN set -o allexport; source /root/TeamUltroid/.env; set +o allexport
+
+# Change the working directory to where the code is located
 WORKDIR /root/TeamUltroid
 
 # Expose necessary ports (if applicable)
