@@ -1,13 +1,13 @@
 # Use Ubuntu 22.04 as the base image
 FROM ubuntu:22.04
 
-# Set timezone
+# Set environment variables for time zone and install dependencies
 ENV TZ=Asia/Kolkata
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Install required dependencies (adjust as necessary for your app)
+# Install necessary dependencies, including tzdata for time zone handling
 RUN apt-get update && \
     apt-get install -y \
+    tzdata \
     python3 \
     python3-pip \
     git \
@@ -15,18 +15,21 @@ RUN apt-get update && \
     bash \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the code and .env file into the container
+# Configure the timezone correctly
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Copy the application code and .env file into the container
 COPY . /root/TeamUltroid/
 COPY .env /root/TeamUltroid/
 
-# Install any additional dependencies via the installer script
+# Install dependencies via the installer script
 COPY installer.sh /root/TeamUltroid/
 RUN bash /root/TeamUltroid/installer.sh
 
 # Load environment variables from the .env file
 RUN set -o allexport; source /root/TeamUltroid/.env; set +o allexport
 
-# Change the working directory to where the code is located
+# Set working directory to where the code is located
 WORKDIR /root/TeamUltroid
 
 # Expose necessary ports (if applicable)
