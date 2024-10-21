@@ -1,3 +1,6 @@
+# Use Ubuntu 22.04 as the base image
+FROM ubuntu:22.04
+
 # Set environment variables for time zone
 ENV TZ=Asia/Kolkata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
