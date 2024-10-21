@@ -3,6 +3,7 @@ FROM ubuntu:22.04
 
 # Set environment variables for time zone
 ENV TZ=Asia/Kolkata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Install necessary dependencies, including tzdata, python3, pip3, virtualenv, and screen (if required)
 RUN apt-get update && \
@@ -18,9 +19,6 @@ RUN apt-get update && \
     screen \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure the timezone correctly
-ENV TZ=Asia/Kolkata
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Set the working directory for your app
 WORKDIR /root/TeamUltroid
